@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Гипокинезия и ригидность — конспект-презентация</title>
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #0f1115;
+    color: #e8eaed;
+    margin: 0;
+    overflow: hidden;
+  }
+  .slide {
+    display: none;
+    padding: 30px 55px;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  .slide.active { display: block; }
+  h1 {
+    font-size: 2.3em;
+    color: #4fc3f7;
+    margin: 0 0 0.3em 0;
+    border-bottom: 2px solid #263238;
+    padding-bottom: 0.25em;
+  }
+  h2 {
+    font-size: 1.6em;
+    color: #81d4fa;
+    margin: 0 0 0.5em 0;
+    border-bottom: 1px solid #263238;
+    padding-bottom: 0.2em;
+  }
+  h3 {
+    font-size: 1.15em;
+    color: #ffcc80;
+    margin: 0.7em 0 0.3em 0;
+  }
+  ul, ol {
+    font-size: 1.02em;
+    line-height: 1.5;
+    margin: 0.3em 0 0.6em 0;
+    padding-left: 1.3em;
+  }
+  li { margin-bottom: 0.3em; }
+  p {
+    font-size: 1.02em;
+    line-height: 1.55;
+    margin: 0.4em 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92em;
+    margin: 0.7em 0;
+  }
+  th, td {
+    border: 1px solid #37474f;
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #1e272e; color: #81d4fa; }
+  tr:nth-child(even) td { background: #161b20; }
+  .box {
+    background: #1a2028;
+    border-left: 4px solid #4fc3f7;
+    padding: 10px 16px;
+    margin: 0.7em 0;
+    border-radius: 4px;
+    font-size: 0.98em;
+  }
+  .warn {
+    background: #2a1f1a;
+    border-left: 4px solid #ff8a65;
+    padding: 10px 16px;
+    margin: 0.7em 0;
+    border-radius: 4px;
+    font-size: 0.98em;
+  }
+  .mech {
+    background: #1b2620;
+    border-left: 4px solid #81c784;
+    padding: 10px 16px;
+    margin: 0.7em 0;
+    border-radius: 4px;
+    font-size: 0.98em;
+  }
+  .example {
+    background: #23202a;
+    border-left: 4px solid #ba68c8;
+    padding: 10px 16px;
+    margin: 0.7em 0;
+    border-radius: 4px;
+    font-size: 0.98em;
+  }
+  .arrow {
+    text-align: center;
+    font-size: 1.1em;
+    color: #4fc3f7;
+    margin: 0.5em 0;
+    letter-spacing: 1px;
+  }
+
+  /* === SVG-слайд === */
+  .svg-controls {
+    display: flex;
+    gap: 10px;
+    margin: 0.5em 0 0.8em 0;
+    flex-wrap: wrap;
+  }
+  .svg-controls button {
+    padding: 9px 18px;
+    font-size: 0.95em;
+    background: #1e272e;
+    color: #e8eaed;
+    border: 2px solid #37474f;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+  .svg-controls button:hover { border-color: #4fc3f7; }
+  .svg-controls button.active {
+    background: #4fc3f7;
+    color: #0f1115;
+    border-color: #4fc3f7;
+  }
+  .svg-controls button.park.active {
+    background: #ef5350;
+    border-color: #ef5350;
+    color: #fff;
+  }
+  .svg-wrap {
+    background: #141a21;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 0.5em 0;
+    display: flex;
+    justify-content: center;
+  }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+
+  /* === Анимации путей === */
+  .flow {
+    stroke-dasharray: 10 8;
+    animation: dash 1s linear infinite;
+  }
+  .flow-slow {
+    stroke-dasharray: 10 8;
+    animation: dash 1.6s linear infinite;
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -18; }
+  }
+  .dopamine-glow {
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.35; }
+  }
+
+  /* === Переключение состояний === */
+  #statePark .path-direct { opacity: 0.3; }
+  #statePark .path-indirect { stroke-width: 5.5; }
+  #statePark .dopamine-arrow { opacity: 0.15; }
+  #statePark .dopamine-label { opacity: 0.25; }
+  #statePark .gpi-inhib { stroke-width: 6; }
+  #statePark .thalamus-box { stroke: #ef5350; }
+  #statePark .cortex-box { stroke: #546e7a; }
+  #statePark .state-label-norm { display: none; }
+  #statePark .state-label-park { display: block; }
+  #stateNorm .state-label-park { display: none; }
+  #stateNorm .state-label-norm { display: block; }
+
+  #statePark .path-direct, #statePark .path-indirect,
+  #statePark .dopamine-arrow, #statePark .gpi-inhib,
+  #statePark .dopamine-label {
+    transition: opacity 0.4s, stroke-width 0.4s;
+  }
+
+  /* === Навигация по слайдам === */
+  .nav {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15,17,21,0.85);
+    padding: 6px 12px;
+    border-radius: 8px;
+    z-index: 100;
+  }
+  .nav button {
+    padding: 8px 16px;
+    font-size: 0.95em;
+    background: #4fc3f7;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #0f1115;
+    font-weight: bold;
+  }
+  .nav button:hover { background: #81d4fa; }
+  #counter { color: #aaa; font-size: 0.9em; }
+  strong { color: #ffe082; }
+  em { color: #b0bec5; }
+</style>
+</head>
+<body>
+
+<!-- СЛАЙД 1 -->
+<div class="slide active">
+  <h1>Гипокинезия и ригидность</h1>
+  <p style="font-size:1.3em; color:#ccc;">Экстрапирамидные нарушения движений</p>
+  <p style="font-size:1.1em; color:#aaa;">Неврология / экстрапирамидная система</p>
+  <div class="box" style="margin-top:2em;">
+    <strong>Цель занятия:</strong> разобрать два ключевых симптома паркинсонического синдрома — гипокинезию и ригидность — их механизмы, клинические проявления, отличия от пирамидных нарушений и место в структуре гипокинетико-ригидного синдрома.
+  </div>
+  <div class="box">
+    <strong>План:</strong>
+    <ul>
+      <li>Что такое гипокинезия: определение, термины, проявления, механизм</li>
+      <li>Что такое ригидность: определение, признаки, механизм</li>
+      <li>Анимированная схема базальных ганглиев</li>
+      <li>Сравнение ригидности и спастичности</li>
+      <li>Клинический синдром паркинсонизма и его причины</li>
+      <li>Итоги и вопросы для самоконтроля</li>
+    </ul>
+  </div>
+</div>
+
+<!-- СЛАЙД 2 -->
+<div class="slide">
+  <h2>Гипокинезия: определение</h2>
+  <p><strong>Гипокинезия</strong> — уменьшение объёма, скорости и амплитуды движений, общая двигательная заторможенность.</p>
+  <ul>
+    <li>Это <strong>не паралич</strong>: мышца способна сокращаться, сила сохранна.</li>
+    <li>Но движение <em>замедлено, редко, трудно начинается</em> и быстро «затухает».</li>
+    <li>Страдает не сама возможность движения, а его <strong>запуск, скорость и амплитуда</strong>.</li>
+  </ul>
+  <div class="warn">
+    <strong>Важно не путать:</strong> при парезе/параличе снижена <em>сила</em> мышцы. При гипокинезии сила сохранна, но движение «не запускается» и быстро истощается.
+  </div>
+  <div class="example">
+    <strong>Пример:</strong> пациент с паркинсонизмом может поднять руку, но делает это медленно, с задержкой, с малой амплитудой, а повторные движения становятся всё меньше и реже.
+  </div>
+</div>
+
+<!-- СЛАЙД 3 -->
+<div class="slide">
+  <h2>Связанные термины</h2>
+  <p>В неврологии используется несколько близких терминов, отражающих разные оттенки одного нарушения:</p>
+  <table>
+    <tr>
+      <th>Термин</th>
+      <th>Что означает</th>
+      <th>Клинический акцент</th>
+    </tr>
+    <tr>
+      <td><strong>Брадикинезия</strong></td>
+      <td>Замедленность движений</td>
+      <td>Скорость снижена, амплитуда может быть сохранна</td>
+    </tr>
+    <tr>
+      <td><strong>Олигокинезия</strong></td>
+      <td>Уменьшение количества движений</td>
+      <td>Пациент делает меньше спонтанных движений</td>
+    </tr>
+    <tr>
+      <td><strong>Акинезия</strong></td>
+      <td>Крайняя степень</td>
+      <td>Трудность или невозможность начать движение</td>
+    </tr>
+  </table>
+  <div class="box">
+    <strong>Обобщение:</strong> все три термина — градации одного нарушения. В клинической практике чаще используют «брадикинезия» и «гипокинезия» как синонимы, хотя строго это разные акценты.
+  </div>
+</div>
+
+<!-- СЛАЙД 4 -->
+<div class="slide">
+  <h2>Проявления гипокинезии</h2>
+  <h3>Общие двигательные</h3>
+  <ul>
+    <li>Замедленная инициация движения — «застывание» перед началом шага.</li>
+    <li>Уменьшение амплитуды: мелкий шаг, <strong>микрография</strong> (мелкий почерк).</li>
+    <li>Быстрое истощение движения при повторении.</li>
+  </ul>
+  <h3>Мимика и речь</h3>
+  <ul>
+    <li><strong>Гипомимия</strong> — «маскообразное» лицо.</li>
+    <li>Редкое мигание, взгляд «в никуда».</li>
+    <li>Тихая монотонная речь (гипофония, брадилалия).</li>
+  </ul>
+  <h3>Ходьба и поза</h3>
+  <ul>
+    <li>Шаркающая походка, «прилипание» к полу.</li>
+    <li>Уменьшение содружественных движений рук при ходьбе.</li>
+    <li>Наклон туловища вперёд, общая скованность.</li>
+  </ul>
+</div>
+
+<!-- СЛАЙД 5 -->
+<div class="slide">
+  <h2>Механизм гипокинезии</h2>
+  <p>В основе — <strong>недостаток дофамина</strong> в нигростриарной системе и нарушение работы базальных ганглиев.</p>
+  <div class="mech">
+    <strong>Ключевая схема:</strong>
+    <div class="arrow">кора → стриатум → бледный шар / чёрная субстанция → таламус → кора</div>
+    При дефиците дофамина преобладает <strong>тормозное влияние на таламус</strong>. Таламус недостаточно «растормаживается», и кора <em>не получает нормального облегчающего сигнала</em> для запуска движения.
+  </div>
+  <ul>
+    <li>Прямой путь (облегчает движение) ослаблен.</li>
+    <li>Непрямой путь (тормозит лишние движения) гиперактивен.</li>
+    <li>Итог — движение трудно <strong>инициировать</strong> и трудно <strong>поддерживать</strong>.</li>
+  </ul>
+  <div class="example">
+    <strong>Аналогия:</strong> представьте автомобиль с исправным двигателем, но «залипшим» сцеплением — газ есть, но тронуться и ехать плавно не получается.
+  </div>
+</div>
+
+<!-- СЛАЙД 6: АНИМИРОВАННАЯ SVG-СХЕМА -->
+<div class="slide">
+  <h2>Схема базальных ганглиев: прямой и непрямой пути</h2>
+  <p>Дофамин из чёрной субстанции модулирует оба пути. Переключай режим, чтобы увидеть, как меняется поток сигналов.</p>
+
+  <div class="svg-controls">
+    <button id="btnNorm" class="active" onclick="setMode('norm')">Норма</button>
+    <button id="btnPark" class="park" onclick="setMode('park')">Паркинсонизм (дефицит дофамина)</button>
+  </div>
+
+  <div class="svg-wrap">
+    <!-- ====== СОСТОЯНИЕ: НОРМА ====== -->
+    <svg id="stateNorm" viewBox="0 0 950 520" width="950" height="520"
+         xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial" font-size="14">
+      <defs>
+        <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#81c784"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef5350"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#4fc3f7"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffd54f"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ce93d8"/>
+        </marker>
+        <radialGradient id="dopGrad">
+          <stop offset="0%" stop-color="#ce93d8" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#ce93d8" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect class="cortex-box" x="350" y="25" width="250" height="55" rx="10"
+            fill="#1e3a5f" stroke="#4fc3f7" stroke-width="2.5"/>
+      <text x="475" y="58" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="16">Кора больших полушарий</text>
+
+      <rect x="110" y="155" width="220" height="60" rx="10"
+            fill="#1e5f3a" stroke="#81c784" stroke-width="2.5"/>
+      <text x="220" y="185" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">Стриатум</text>
+      <text x="220" y="203" text-anchor="middle" fill="#b0bec5" font-size="11">хвостатое ядро + скорлупа</text>
+
+      <rect x="400" y="155" width="150" height="60" rx="10"
+            fill="#3a3a1e" stroke="#ffd54f" stroke-width="2.5"/>
+      <text x="475" y="182" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">GPe</text>
+      <text x="475" y="200" text-anchor="middle" fill="#b0bec5" font-size="11">наруж. бледный шар</text>
+
+      <rect x="640" y="155" width="180" height="60" rx="10"
+            fill="#4a1e1e" stroke="#ef5350" stroke-width="2.5"/>
+      <text x="730" y="182" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">STN</text>
+      <text x="730" y="200" text-anchor="middle" fill="#b0bec5" font-size="11">субталамическое ядро</text>
+
+      <rect x="400" y="300" width="220" height="60" rx="10"
+            fill="#4a2a1e" stroke="#ff8a65" stroke-width="2.5"/>
+      <text x="510" y="327" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">GPi / SNr</text>
+      <text x="510" y="345" text-anchor="middle" fill="#b0bec5" font-size="11">внутр. бледный шар / чёрная субст.</text>
+
+      <rect class="thalamus-box" x="350" y="430" width="250" height="60" rx="10"
+            fill="#2a1e4a" stroke="#ba68c8" stroke-width="2.5"/>
+      <text x="475" y="466" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="16">Таламус</text>
+
+      <rect x="60" y="300" width="210" height="60" rx="10"
+            fill="#3a1e3a" stroke="#ce93d8" stroke-width="2.5"/>
+      <text x="165" y="327" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">SNc (компактная)</text>
+      <text x="165" y="345" text-anchor="middle" fill="#b0bec5" font-size="11">источник дофамина</text>
+
+      <circle cx="165" cy="330" r="90" fill="url(#dopGrad)" class="dopamine-glow"/>
+
+      <path class="flow" d="M 390 80 C 330 110, 280 125, 240 152"
+            fill="none" stroke="#81c784" stroke-width="3" marker-end="url(#arrowGreen)"/>
+      <path class="flow" d="M 420 80 C 380 110, 340 125, 300 152"
+            fill="none" stroke="#81c784" stroke-width="3" marker-end="url(#arrowGreen)"/>
+
+      <path class="flow path-direct" d="M 260 215 C 310 260, 380 280, 415 298"
+            fill="none" stroke="#81c784" stroke-width="3.5" marker-end="url(#arrowGreen)"/>
+      <text class="path-direct" x="300" y="270" fill="#81c784" font-size="13" font-weight="bold">прямой путь</text>
+      <text class="path-direct" x="300" y="286" fill="#81c784" font-size="11">облегчает движение</text>
+
+      <path class="flow path-indirect" d="M 330 185 L 396 185"
+            fill="none" stroke="#ef5350" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+      <path class="flow path-indirect" d="M 550 185 L 636 185"
+            fill="none" stroke="#ef5350" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+      <path class="flow path-indirect" d="M 700 215 C 660 260, 600 280, 570 298"
+            fill="none" stroke="#ef5350" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+      <text class="path-indirect" x="700" y="270" fill="#ef5350" font-size="13" font-weight="bold">непрямой путь</text>
+      <text class="path-indirect" x="700" y="286" fill="#ef5350" font-size="11">тормозит лишние движения</text>
+
+      <path class="flow-slow gpi-inhib" d="M 510 360 L 510 426"
+            fill="none" stroke="#ff8a65" stroke-width="3.5" marker-end="url(#arrowYellow)"/>
+      <text x="528" y="398" fill="#ff8a65" font-size="12" font-weight="bold">торможение</text>
+
+      <path class="flow" d="M 475 428 L 475 84"
+            fill="none" stroke="#4fc3f7" stroke-width="3.5" marker-end="url(#arrowBlue)"/>
+      <text x="490" y="255" fill="#4fc3f7" font-size="12" font-weight="bold">облегчение</text>
+      <text x="490" y="271" fill="#4fc3f7" font-size="11">запуск движения</text>
+
+      <path class="flow-slow dopamine-arrow" d="M 200 298 C 180 260, 195 235, 215 217"
+            fill="none" stroke="#ce93d8" stroke-width="3" stroke-dasharray="8 6"
+            marker-end="url(#arrowPurple)"/>
+      <text class="dopamine-label" x="30" y="255" fill="#ce93d8" font-size="13" font-weight="bold">дофамин</text>
+      <text class="dopamine-label" x="30" y="272" fill="#ce93d8" font-size="11">D1 — усиливает прямой путь</text>
+      <text class="dopamine-label" x="30" y="287" fill="#ce93d8" font-size="11">D2 — тормозит непрямой путь</text>
+
+      <text class="state-label-norm" x="475" y="515" text-anchor="middle"
+            fill="#81c784" font-size="15" font-weight="bold">
+        ● Норма: дофамин балансирует оба пути, таламус растормаживается, кора запускает движение
+      </text>
+
+      <g transform="translate(620, 445)">
+        <line x1="0" y1="0" x2="25" y2="0" stroke="#81c784" stroke-width="3.5"/>
+        <text x="32" y="4" fill="#e8eaed" font-size="12">прямой</text>
+        <line x1="100" y1="0" x2="125" y2="0" stroke="#ef5350" stroke-width="3.5"/>
+        <text x="132" y="4" fill="#e8eaed" font-size="12">непрямой</text>
+        <line x1="215" y1="0" x2="240" y2="0" stroke="#ce93d8" stroke-width="3" stroke-dasharray="8 6"/>
+        <text x="247" y="4" fill="#e8eaed" font-size="12">дофамин</text>
+      </g>
+    </svg>
+
+    <!-- ====== СОСТОЯНИЕ: ПАРКИНСОНИЗМ ====== -->
+    <svg id="statePark" viewBox="0 0 950 520" width="950" height="520"
+         xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial" font-size="14"
+         style="display:none;">
+      <defs>
+        <marker id="arrowGreen2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#81c784"/>
+        </marker>
+        <marker id="arrowRed2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef5350"/>
+        </marker>
+        <marker id="arrowBlue2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#4fc3f7"/>
+        </marker>
+        <marker id="arrowYellow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffd54f"/>
+        </marker>
+        <marker id="arrowPurple2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ce93d8"/>
+        </marker>
+      </defs>
+
+      <rect class="cortex-box" x="350" y="25" width="250" height="55" rx="10"
+            fill="#1e3a5f" stroke="#546e7a" stroke-width="2.5"/>
+      <text x="475" y="58" text-anchor="middle" fill="#90a4ae" font-weight="bold" font-size="16">Кора больших полушарий</text>
+
+      <rect x="110" y="155" width="220" height="60" rx="10"
+            fill="#1e5f3a" stroke="#81c784" stroke-width="2.5"/>
+      <text x="220" y="185" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">Стриатум</text>
+      <text x="220" y="203" text-anchor="middle" fill="#b0bec5" font-size="11">хвостатое ядро + скорлупа</text>
+
+      <rect x="400" y="155" width="150" height="60" rx="10"
+            fill="#3a3a1e" stroke="#ffd54f" stroke-width="2.5"/>
+      <text x="475" y="182" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">GPe</text>
+      <text x="475" y="200" text-anchor="middle" fill="#b0bec5" font-size="11">наруж. бледный шар</text>
+
+      <rect x="640" y="155" width="180" height="60" rx="10"
+            fill="#4a1e1e" stroke="#ef5350" stroke-width="3"/>
+      <text x="730" y="182" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">STN</text>
+      <text x="730" y="200" text-anchor="middle" fill="#b0bec5" font-size="11">субталамическое ядро</text>
+
+      <rect x="400" y="300" width="220" height="60" rx="10"
+            fill="#4a2a1e" stroke="#ff8a65" stroke-width="3"/>
+      <text x="510" y="327" text-anchor="middle" fill="#e8eaed" font-weight="bold" font-size="15">GPi / SNr</text>
+      <text x="510" y="345" text-anchor="middle" fill="#b0bec5" font-size="11">внутр. бледный шар / чёрная субст.</text>
+
+      <rect class="thalamus-box" x="350" y="430" width="250" height="60" rx="10"
+            fill="#4a1a1a" stroke="#ef5350" stroke-width="3"/>
+      <text x="475" y="466" text-anchor="middle" fill="#ffcdd2" font-weight="bold" font-size="16">Таламус</text>
+      <text x="475" y="482" text-anchor="middle" fill="#ef9a9a" font-size="11">избыточно заторможен</text>
+
+      <rect x="60" y="300" width="210" height="60" rx="10"
+            fill="#2a152a" stroke="#5e4a66" stroke-width="2" opacity="0.5"/>
+      <text x="165" y="327" text-anchor="middle" fill="#7a6a80" font-weight="bold" font-size="15">SNc (компактная)</text>
+      <text x="165" y="345" text-anchor="middle" fill="#5e4a66" font-size="11">дефицит дофамина</text>
+
+      <path class="flow-slow" d="M 390 80 C 330 110, 280 125, 240 152"
+            fill="none" stroke="#81c784" stroke-width="2" opacity="0.4" marker-end="url(#arrowGreen2)"/>
+      <path class="flow-slow" d="M 420 80 C 380 110, 340 125, 300 152"
+            fill="none" stroke="#81c784" stroke-width="2" opacity="0.4" marker-end="url(#arrowGreen2)"/>
+
+      <path class="flow-slow path-direct" d="M 260 215 C 310 260, 380 280, 415 298"
+            fill="none" stroke="#81c784" stroke-width="1.8" opacity="0.25" marker-end="url(#arrowGreen2)"/>
+      <text class="path-direct" x="300" y="270" fill="#81c784" font-size="13" font-weight="bold" opacity="0.3">прямой путь</text>
+      <text class="path-direct" x="300" y="286" fill="#81c784" font-size="11" opacity="0.3">ослаблен</text>
+
+      <path class="flow" d="M 330 185 L 396 185"
+            fill="none" stroke="#ef5350" stroke-width="5.5" marker-end="url(#arrowRed2)"/>
+      <path class="flow" d="M 550 185 L 636 185"
+            fill="none" stroke="#ef5350" stroke-width="5.5" marker-end="url(#arrowRed2)"/>
+      <path class="flow path-indirect" d="M 700 215 C 660 260, 600 280, 570 298"
+            fill="none" stroke="#ef5350" stroke-width="5.5" marker-end="url(#arrowRed2)"/>
+      <text class="path-indirect" x="700" y="270" fill="#ef5350" font-size="13" font-weight="bold">непрямой путь</text>
+      <text class="path-indirect" x="700" y="286" fill="#ff8a80" font-size="11">гиперактивен</text>
+
+      <path class="flow-slow gpi-inhib" d="M 510 360 L 510 426"
+            fill="none" stroke="#ef5350" stroke-width="6" marker-end="url(#arrowYellow2)"/>
+      <text x="528" y="398" fill="#ef5350" font-size="12" font-weight="bold">избыточное торможение</text>
+
+      <path class="flow-slow" d="M 475 428 L 475 84"
+            fill="none" stroke="#4fc3f7" stroke-width="1.8" opacity="0.35" marker-end="url(#arrowBlue2)"/>
+      <text x="490" y="255" fill="#4fc3f7" font-size="12" font-weight="bold" opacity="0.4">ослаблено</text>
+      <text x="490" y="271" fill="#4fc3f7" font-size="11" opacity="0.4">кора недополучает сигнал</text>
+
+      <path class="dopamine-arrow" d="M 200 298 C 180 260, 195 235, 215 217"
+            fill="none" stroke="#ce93d8" stroke-width="1.5" stroke-dasharray="4 8"
+            opacity="0.15" marker-end="url(#arrowPurple2)"/>
+      <text class="dopamine-label" x="30" y="255" fill="#ce93d8" font-size="13" font-weight="bold" opacity="0.25">дофамин ↓</text>
+      <text class="dopamine-label" x="30" y="272" fill="#ce93d8" font-size="11" opacity="0.25">D1 недополучает стимул</text>
+      <text class="dopamine-label" x="30" y="287" fill="#ce93d8" font-size="11" opacity="0.25">D2 не тормозит непрямой</text>
+
+      <text class="state-label-park" x="475" y="515" text-anchor="middle"
+            fill="#ef5350" font-size="15" font-weight="bold">
+        ● Паркинсонизм: дефицит дофамина → прямой путь ослаблен, непрямой гиперактивен → таламус переторможен → гипокинезия + ригидность
+      </text>
+    </svg>
+  </div>
+
+  <div class="mech">
+    <strong>Как читать схему:</strong> зелёные стрелки — прямой (облегчающий) путь, красные — непрямой (тормозный), оранжевая — итоговое торможение таламуса, синяя — облегчение коры. Дофамин (фиолетовый пунктир) одновременно усиливает прямой путь (D1) и ослабляет непрямой (D2). При дефиците дофамина прямой путь слабеет, непрямой усиливается → таламус переторможен → кора недополучает «разрешение» на движение.
+  </div>
+</div>
+
+<!-- СЛАЙД 7 -->
+<div class="slide">
+  <h2>Ригидность: определение</h2>
+  <p><strong>Ригидность</strong> — повышение мышечного тонуса <strong>экстрапирамидного типа</strong>.</p>
+  <ul>
+    <li>Отличается от пирамидной спастичности по механизму и клинике.</li>
+    <li>Тонус повышен <strong>равномерно</strong> в сгибателях и разгибателях.</li>
+    <li>Сохраняется <strong>в покое</strong>, не зависит от движения.</li>
+    <li><strong>Не зависит от скорости</strong> пассивного движения конечности.</li>
+  </ul>
+  <div class="warn">
+    <strong>Терминология:</strong> правильно — «<strong>ригидность</strong>». Написание «регидность» — орфографическая ошибка.
+  </div>
+  <div class="box">
+    <strong>Почему равномерно?</strong> При экстрапирамидной ригидности одновременно повышается тонус и агонистов, и антагонистов, поэтому сопротивление при пассивном движении ощущается как постоянное, «восковидное».
+  </div>
+</div>
+
+<!-- СЛАЙД 8 -->
+<div class="slide">
+  <h2>Признаки экстрапирамидной ригидности</h2>
+  <ul>
+    <li><strong>Равномерное сопротивление</strong> при пассивном движении конечности.</li>
+    <li><strong>«Восковидная ригидность»</strong> — ощущение, будто сгибаешь воск или пластилин.</li>
+    <li><strong>Феномен «зубчатого колеса»</strong> — прерывистое, ступенчатое сопротивление при пассивном движении.</li>
+    <li><strong>Рефлексы не повышены</strong> — сухожильные рефлексы нормальные или слегка снижены.</li>
+    <li><strong>Нет клонуса</strong> (клонических подёргиваний при растяжении).</li>
+    <li><strong>Нет патологических рефлексов</strong> (Бабинского и др.).</li>
+  </ul>
+  <div class="example">
+    <strong>Как проверяют:</strong> врач пассивно сгибает и разгибает руку пациента в локтевом суставе с разной скоростью. При ригидности сопротивление одинаковое на всём протяжении и не зависит от скорости.
+  </div>
+</div>
+
+<!-- СЛАЙД 9 -->
+<div class="slide">
+  <h2>Механизм ригидности</h2>
+  <ul>
+    <li>Нарушение баланса <strong>прямого и непрямого путей</strong> базальных ганглиев.</li>
+    <li><strong>Дефицит дофамина</strong> в нигростриарной системе.</li>
+    <li><strong>Избыточное тормозное влияние на таламус</strong> и через него — на кору.</li>
+    <li>Мышцы находятся в состоянии <strong>повышенного тонуса</strong> постоянно, не только при движении.</li>
+  </ul>
+  <div class="mech">
+    <strong>Суть:</strong> это <em>не истинная спастичность</em>. Здесь нет гиперактивности мотонейронов спинного мозга, как при пирамидных поражениях. Тонус повышен за счёт нарушения <strong>надсегментарной регуляции</strong> через базальные ганглии.
+  </div>
+  <div class="box">
+    <strong>Клиническое следствие:</strong> ригидность + гипокинезия + тремор покоя + постуральная неустойчивость = классический <strong>гипокинетико-ригидный синдром</strong> (паркинсонизм).
+  </div>
+</div>
+
+<!-- СЛАЙД 10 -->
+<div class="slide">
+  <h2>Сравнение: ригидность и спастичность</h2>
+  <table>
+    <tr>
+      <th>Признак</th>
+      <th>Экстрапирамидная ригидность</th>
+      <th>Пирамидная спастичность</th>
+    </tr>
+    <tr>
+      <td>Локализация повышения тонуса</td>
+      <td>Равномерно во всех группах</td>
+      <td>Преимущественно в антигравитационных мышцах</td>
+    </tr>
+    <tr>
+      <td>В покое</td>
+      <td>Сохраняется</td>
+      <td>Часто уменьшается</td>
+    </tr>
+    <tr>
+      <td>Зависимость от скорости</td>
+      <td>Нет</td>
+      <td>Есть (чем быстрее, тем сильнее)</td>
+    </tr>
+    <tr>
+      <td>Характер сопротивления</td>
+      <td>Восковидное, «зубчатое колесо»</td>
+      <td>«Складной нож»</td>
+    </tr>
+    <tr>
+      <td>Сухожильные рефлексы</td>
+      <td>Не повышены</td>
+      <td>Повышены</td>
+    </tr>
+    <tr>
+      <td>Клонус</td>
+      <td>Нет</td>
+      <td>Есть</td>
+    </tr>
+    <tr>
+      <td>Патологические рефлексы</td>
+      <td>Нет</td>
+      <td>Есть (Бабинского и др.)</td>
+    </tr>
+    <tr>
+      <td>Механизм</td>
+      <td>Нарушение базальных ганглиев</td>
+      <td>Поражение пирамидного пути</td>
+    </tr>
+  </table>
+</div>
+
+<!-- СЛАЙД 11 -->
+<div class="slide">
+  <h2>Клинический синдром: паркинсонизм</h2>
+  <p style="font-size:1.2em; color:#81d4fa;"><strong>Гипокинетико-ригидный синдром = паркинсонизм</strong></p>
+  <h3>Классическая тетрада</h3>
+  <ul>
+    <li><strong>Гипокинезия / брадикинезия</strong> — замедленность и трудность запуска движений.</li>
+    <li><strong>Ригидность</strong> — равномерное повышение тонуса по экстрапирамидному типу.</li>
+    <li><strong>Тремор покоя</strong> — 4–6 Гц, «скатывание пилюль», уменьшается при движении.</li>
+    <li><strong>Постуральная неустойчивость</strong> — падения, ретро-/пропульсия, нарушение позных рефлексов.</li>
+  </ul>
+  <div class="box">
+    <strong>Дополнительно:</strong> гипомимия, микрография, гипофония, шаркающая походка, вегетативные нарушения (запоры, ортостатическая гипотензия, себорея).
+  </div>
+</div>
+
+<!-- СЛАЙД 12 -->
+<div class="slide">
+  <h2>Причины паркинсонизма</h2>
+  <table>
+    <tr>
+      <th>Группа</th>
+      <th>Примеры</th>
+      <th>Особенности</th>
+    </tr>
+    <tr>
+      <td><strong>Нейродегенеративные</strong></td>
+      <td>Болезнь Паркинсона, МСА, прогрессирующий надъядерный паралич</td>
+      <td>Постепенное начало, часто асимметричное</td>
+    </tr>
+    <tr>
+      <td><strong>Сосудистые</strong></td>
+      <td>Мультиинфарктное состояние, поражение базальных ганглиев</td>
+      <td>Чаще симметрично, преобладает нижняя половина тела</td>
+    </tr>
+    <tr>
+      <td><strong>Лекарственные</strong></td>
+      <td>Нейролептики, метоклопрамид, резерпин</td>
+      <td>Обратимы при отмене препарата</td>
+    </tr>
+    <tr>
+      <td><strong>Токсические</strong></td>
+      <td>Марганец, CO, MPTP</td>
+      <td>Связь с профессиональной вредностью</td>
+    </tr>
+    <tr>
+      <td><strong>Прочие</strong></td>
+      <td>Постэнцефалитический, посттравматический</td>
+      <td>Анамнез помогает установить причину</td>
+    </tr>
+  </table>
+  <div class="warn">
+    <strong>Запомни:</strong> паркинсонизм — это <em>синдром</em>, а не всегда болезнь Паркинсона. Болезнь Паркинсона — лишь одна из причин.
+  </div>
+</div>
+
+<!-- СЛАЙД 13 -->
+<div class="slide">
+  <h2>Ключевые выводы</h2>
+  <ul>
+    <li><strong>Гипокинезия</strong> — не паралич, а нарушение запуска, скорости и амплитуды движений.</li>
+    <li><strong>Ригидность</strong> — экстрапирамидное повышение мышечного тонуса: равномерное, в покое, не зависит от скорости.</li>
+    <li>Вместе с <strong>тремором покоя</strong> и <strong>постуральной неустойчивостью</strong> они образуют <strong>паркинсонизм</strong>.</li>
+    <li>В основе — <strong>дисфункция базальных ганглиев</strong> и <strong>дефицит дофамина</strong> в нигростриарной системе.</li>
+    <li>Отличие от пирамидных нарушений: нет гиперрефлексии, клонуса, патологических рефлексов.</li>
+  </ul>
+  <div class="mech">
+    <strong>Единая формула:</strong><br>
+    Дефицит дофамина → дисбаланс прямого и непрямого путей → избыточное торможение таламуса → гипокинезия + ригидность.
+  </div>
+</div>
+
+<!-- СЛАЙД 14 -->
+<div class="slide">
+  <h2>Вопросы для самоконтроля</h2>
+  <ol style="font-size:1.05em; line-height:1.7;">
+    <li>Чем гипокинезия отличается от паралича?</li>
+    <li>Чем брадикинезия отличается от акинезии?</li>
+    <li>Перечислите основные проявления гипокинезии.</li>
+    <li>Чем ригидность отличается от спастичности? Назовите минимум 5 отличий.</li>
+    <li>Что такое феномен «зубчатого колеса» и при чём он возникает?</li>
+    <li>Какие симптомы образуют гипокинетико-ригидный синдром?</li>
+    <li>Какие причины паркинсонизма вы знаете? Чем болезнь Паркинсона отличается от паркинсонизма как синдрома?</li>
+    <li>Опишите механизм гипокинезии и ригидности через прямой и непрямой пути базальных ганглиев (используйте схему).</li>
+  </ol>
+  <div class="box">
+    <strong>Практическое задание:</strong> опишите, как вы будете исследовать тонус у пациента с подозрением на паркинсонизм, и какие признаки укажут на экстрапирамидную, а не пирамидную природу нарушений.
+  </div>
+</div>
+
+<div class="nav">
+  <button onclick="prev()">← Назад</button>
+  <button onclick="next()">Вперёд →</button>
+  <span id="counter"></span>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault(); next();
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); prev();
+    }
+  });
+
+  // Переключение режима схемы
+  function setMode(mode) {
+    const norm = document.getElementById('stateNorm');
+    const park = document.getElementById('statePark');
+    const btnNorm = document.getElementById('btnNorm');
+    const btnPark = document.getElementById('btnPark');
+
+    if (mode === 'norm') {
+      norm.style.display = 'block';
+      park.style.display = 'none';
+      btnNorm.classList.add('active');
+      btnPark.classList.remove('active');
+    } else {
+      norm.style.display = 'none';
+      park.style.display = 'block';
+      btnNorm.classList.remove('active');
+      btnPark.classList.add('active');
+    }
+  }
+
+  show(0);
+</script>
+
+</body>
+</html>
